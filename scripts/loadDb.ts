@@ -1,7 +1,8 @@
 import { DataAPIClient } from "@datastax/astra-db-ts";
-import { PuppeteerWebBaseLoader } from "@langchain/community/document_loaders/web/puppeteer";
 import OpenAI from "openai";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import fs from "fs";
+import path from "path";
 import "dotenv/config";
 
 type SimilarityMetric = "dot_product" | "cosine" | "euclidean";
@@ -15,11 +16,6 @@ const {
 } = process.env;
 
 const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
-
-const f1Data = [
-  "https://en.wikipedia.org/wiki/Formula_One",
-  "https://en.wikipedia.org/wiki/2024_Formula_One_World_Championship",
-];
 
 const client = new DataAPIClient(ASTRA_DB_APPLICATION_TOKEN);
 const db = client.db(ASTRA_DB_API_ENDPOINT, { namespace: ASTRA_DB_NAMESPACE });
@@ -42,11 +38,18 @@ const createCollection = async (
 };
 
 const loadSampleData = async () => {
+  // Load data from data.json file
+  const filePath = path.join(__dirname, "data", "data.json");
+  const fileContent = fs.readFileSync(filePath, "utf-8");
+  const f1Data = JSON.parse(fileContent);
+
   const collection = await db.collection(ASTRA_DB_COLLECTION);
-  for await (const url of f1Data) {
-    const content = await scrapePage(url);
-    const chunks = await splitter.splitText(content);
-    for await (const chunk of chunks) {
+
+  for (const item of f1Data) {
+    // Assuming each item in f1Data is a text field
+    const chunks = await splitter.splitText(item.text);
+
+    for (const chunk of chunks) {
       const embedding = await openai.embeddings.create({
         model: "text-embedding-3-small",
         input: chunk,
@@ -62,23 +65,6 @@ const loadSampleData = async () => {
       console.log(res);
     }
   }
-};
-
-const scrapePage = async (url: string) => {
-  const loader = new PuppeteerWebBaseLoader(url, {
-    launchOptions: {
-      headless: true,
-    },
-    gotoOptions: {
-      waitUntil: "domcontentloaded",
-    },
-    evaluate: async (page, browser) => {
-      const result = await page.evaluate(() => document.body.innerHTML);
-      await browser.close();
-      return result;
-    },
-  });
-  return (await loader.scrape())?.replace(/<[^>]*>?/gm, "");
 };
 
 createCollection().then(() => loadSampleData());
