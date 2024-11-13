@@ -1,0 +1,17 @@
+[
+  {
+    "text": "Alice Johnson, Frontend Developer, is on vacation from 2023-12-05 to 2023-12-10. Total days: 5. Status: Approved."
+  },
+  {
+    "text": "Bob Smith, Frontend Developer, has a planned vacation from 2023-12-15 to 2023-12-20. Total days: 5. Status: Pending."
+  },
+  {
+    "text": "Charlie Williams, Backend Developer, is on vacation from 2023-12-10 to 2023-12-15. Total days: 5. Status: Approved."
+  },
+  {
+    "text": "Dana Lee, Backend Developer, has a vacation scheduled from 2023-12-22 to 2023-12-26. Total days: 4. Status: Pending."
+  },
+  {
+    "text": "Evelyn Brown, Manager, is on vacation from 2023-12-24 to 2023-12-31. Total days: 7. Status: Approved."
+  }
+]
