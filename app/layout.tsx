@@ -1,8 +1,9 @@
 import "./global.css";
 
 export const metadata = {
-  title: "ARM Chat",
-  description: "AI companion for all your queries",
+  title: "Nutrimate",
+  description:
+    "A RAG Chatbot powered by Gen AI delivers precise, verified answers to nutrition questions, drawing from reputable research papers, medical journals, and government health sites.",
 };
 
 const RootLayout = ({ children }) => {
