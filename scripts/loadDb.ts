@@ -39,7 +39,7 @@ const createCollection = async (
 
 const loadSampleData = async () => {
   // Load data from data.json file
-  const filePath = path.join(__dirname, "data", "data.json");
+  const filePath = path.join(__dirname, "..", "data", "data.json");
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const f1Data = JSON.parse(fileContent);
 
