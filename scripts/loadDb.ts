@@ -41,12 +41,12 @@ const loadSampleData = async () => {
   // Load data from data.json file
   const filePath = path.join(__dirname, "..", "data", "data.json");
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  const f1Data = JSON.parse(fileContent);
+  const nutriData = JSON.parse(fileContent);
 
   const collection = await db.collection(ASTRA_DB_COLLECTION);
 
-  for (const item of f1Data) {
-    // Assuming each item in f1Data is a text field
+  for (const item of nutriData) {
+    // Assuming each item in nutriData is a text field
     const chunks = await splitter.splitText(item.text);
 
     for (const chunk of chunks) {
