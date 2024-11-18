@@ -1,17 +1,115 @@
 [
   {
-    "text": "Alice Johnson, Frontend Developer, is on vacation from 2023-12-05 to 2023-12-10. Total days: 5. Status: Approved."
-  },
-  {
-    "text": "Bob Smith, Frontend Developer, has a planned vacation from 2023-12-15 to 2023-12-20. Total days: 5. Status: Pending."
-  },
-  {
-    "text": "Charlie Williams, Backend Developer, is on vacation from 2023-12-10 to 2023-12-15. Total days: 5. Status: Approved."
-  },
-  {
-    "text": "Dana Lee, Backend Developer, has a vacation scheduled from 2023-12-22 to 2023-12-26. Total days: 4. Status: Pending."
-  },
-  {
-    "text": "Evelyn Brown, Manager, is on vacation from 2023-12-24 to 2023-12-31. Total days: 7. Status: Approved."
+    "personalDetails": {
+      "name": "John Doe",
+      "age": 45,
+      "gender": "Male",
+      "bloodType": "O+",
+      "allergies": ["Peanuts", "Penicillin"]
+    },
+    "medicalHistory": {
+      "chronicDiseases": [
+        {
+          "name": "Hypertension",
+          "diagnosedOn": "2015-06-15",
+          "medications": ["Amlodipine", "Losartan"],
+          "notes": "Regular blood pressure monitoring recommended"
+        },
+        {
+          "name": "Type 2 Diabetes",
+          "diagnosedOn": "2018-09-20",
+          "medications": ["Metformin", "Insulin"],
+          "notes": "Maintain HbA1c below 7%"
+        }
+      ],
+      "previousIllnesses": [
+        {
+          "name": "Chickenpox",
+          "occurredOn": "1985-03-10",
+          "treatment": "Supportive care",
+          "notes": "Fully recovered"
+        },
+        {
+          "name": "Influenza",
+          "occurredOn": "2020-01-15",
+          "treatment": "Antiviral medication",
+          "notes": "No complications"
+        }
+      ],
+      "surgeries": [
+        {
+          "name": "Appendectomy",
+          "performedOn": "2005-07-22",
+          "hospital": "General Hospital",
+          "notes": "No complications"
+        }
+      ],
+      "injuries": [
+        {
+          "description": "Fractured left arm",
+          "occurredOn": "2012-04-18",
+          "treatment": "Cast for 6 weeks",
+          "notes": "Full recovery"
+        }
+      ],
+      "vaccinationRecord": [
+        {
+          "name": "COVID-19 Vaccine",
+          "dateAdministered": "2021-05-10",
+          "doses": 2,
+          "manufacturer": "Pfizer",
+          "notes": "No adverse reactions"
+        },
+        {
+          "name": "Tetanus Booster",
+          "dateAdministered": "2019-11-05",
+          "notes": "Next booster due in 2029"
+        }
+      ],
+      "familyHistory": [
+        {
+          "relation": "Father",
+          "conditions": ["Hypertension", "Heart Disease"],
+          "notes": "Passed away at age 75 due to heart failure"
+        },
+        {
+          "relation": "Mother",
+          "conditions": ["Type 2 Diabetes"],
+          "notes": "Managing well with medication"
+        }
+      ],
+      "lifestyleFactors": {
+        "smokingStatus": "Non-smoker",
+        "alcoholConsumption": "Occasional",
+        "exercise": "Moderate - 3 times a week",
+        "diet": "Balanced diet with reduced sugar intake"
+      }
+    },
+    "currentMedications": [
+      {
+        "name": "Metformin",
+        "dosage": "500 mg",
+        "frequency": "Twice daily",
+        "notes": "Take with meals"
+      },
+      {
+        "name": "Amlodipine",
+        "dosage": "5 mg",
+        "frequency": "Once daily",
+        "notes": "Take in the morning"
+      }
+    ],
+    "doctorNotes": [
+      {
+        "date": "2024-01-15",
+        "doctor": "Dr. Jane Smith",
+        "notes": "Patient shows good control of diabetes and hypertension. Continue current regimen."
+      },
+      {
+        "date": "2023-12-10",
+        "doctor": "Dr. John Anderson",
+        "notes": "Advised to increase physical activity and maintain weight."
+      }
+    ]
   }
 ]

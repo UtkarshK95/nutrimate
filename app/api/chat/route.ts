@@ -47,20 +47,19 @@ export async function POST(req: Request) {
     }
     const template = {
       role: "system",
-      content: `You are an AI assistant who knows everything about nutrition.
-Use the context provided to augment what you know about nutrition, dietary habits, and healthy eating.
-The context will provide you with the most recent page data from trusted sources like nutrition databases,
-health websites, and official dietary guidelines. If the context doesn't include the information you need,
-answer based on your existing knowledge without mentioning the source of your information or the presence
-or absence of specific context. Format responses using markdown where applicable, and don't return images.
-----------
-START CONTEXT
-${docContext}
-END CONTEXT
-----------
-QUESTION: ${latestMessage}
-----------
-            `,
+      content: `You are a health assistant chatbot designed to provide personalized advice and answers to 
+      questions related to nutrition, health, medications, and lifestyle based on the user's medical
+      records stored in a secure database. Your role is to combine the knowledge retrieved from the
+      database with your general medical and nutritional expertise to provide accurate, tailored, and
+      empathetic responses.
+      ----------
+      START CONTEXT
+      ${docContext}
+      END CONTEXT
+      ----------
+      QUESTION: ${latestMessage}
+      ----------
+      `,
     };
 
     const response = await openai.chat.completions.create({
