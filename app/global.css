@@ -9,29 +9,29 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: url("assets/background.avif");
+  background-image: url("assets/background.png");
 }
 
 main {
-  width: 80vw;
-  height: 80vh;
+  width: 75vw;
+  height: 75vh;
   background: linear-gradient(to bottom, #f8f8f8, #cfcfcf);
-  border-radius: 15px;
+  border-radius: 24px;
   display: flex;
-  align-items: center;
   flex-direction: column;
   justify-content: space-between;
-  padding: 20px;
+  align-items: center;
+  padding: 32px;
   text-align: center;
-  color: #383838;
+  box-shadow: var(--box-shadow);
 }
 
 section {
   width: 100%;
+  overflow: scroll;
 }
 
 section.populated {
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -43,13 +43,12 @@ section.populated {
 }
 
 form {
-  height: 50px;
+  height: 64px;
   width: 100%;
   display: flex;
   border-top: #828282 solid 2px;
   padding-top: 20px;
-  border-radius: 0 0 10px 10px;
-  overflow: hidden;
+  gap: 16px;
 }
 
 input.question-box {
@@ -58,6 +57,7 @@ input.question-box {
   font-size: 15px;
   color: #383838;
   border: none;
+  border-radius: 16px;
 }
 
 input[type="submit"] {
@@ -67,10 +67,23 @@ input[type="submit"] {
   border: none;
   color: #fff;
   background-color: #411b8d;
+  border-radius: 16px;
 }
 
 input:focus {
   outline: none;
+}
+
+.prompt-suggestion-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.prompt-suggestion-button {
+  display: flex;
+  padding: 8px;
+  border-radius: 8px;
 }
 
 .bubble {
