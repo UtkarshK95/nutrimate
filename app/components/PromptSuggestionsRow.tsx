@@ -2,10 +2,10 @@ import PromptSuggestionButton from "./PromptSuggestionButton";
 
 const PromptSuggestionsRow = ({ onPromptClick }) => {
   const prompts = [
-    "Can you provide the nutritional benefits of eggs? What vitamins, minerals, and macronutrients does it contain?",
-    "What are some nutrient-dense foods suitable for a keto lifestyle?",
-    "Which is healthier between fish and chicken, and why? Please compare their nutritional values.",
-    "What are the best foods to include in my diet if I want to improve heart health",
+    "Can you provide the nutritional benefits of eggs?",
+    "What medications should I take tommorrow",
+    "According to my medical history, what kind of foods I should avoid",
+    "What are the medical conditions I have?",
   ];
 
   return (

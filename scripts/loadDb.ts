@@ -34,26 +34,38 @@ const createCollection = async (
       metric: similarityMetric,
     },
   });
-  console.log(res);
+  console.log("Collection created:", res);
 };
 
-const loadSampleData = async () => {
-  // Load data from data.json file
+const processMedicalHistory = async () => {
+  // Load medical data from data.json
   const filePath = path.join(__dirname, "..", "data", "data.json");
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  const nutriData = JSON.parse(fileContent);
+  const medicalHistory = JSON.parse(fileContent);
 
   const collection = await db.collection(ASTRA_DB_COLLECTION);
 
-  for (const item of nutriData) {
-    // Assuming each item in nutriData is a text field
-    const chunks = await splitter.splitText(item.text);
+  // Flatten the JSON data into text chunks for embedding
+  const dataToProcess = [];
+  const processObject = (obj, prefix = "") => {
+    for (const key in obj) {
+      if (typeof obj[key] === "object" && !Array.isArray(obj[key])) {
+        processObject(obj[key], `${prefix}${key}.`);
+      } else {
+        dataToProcess.push(`${prefix}${key}: ${JSON.stringify(obj[key])}`);
+      }
+    }
+  };
+
+  processObject(medicalHistory);
+
+  for (const item of dataToProcess) {
+    const chunks = await splitter.splitText(item);
 
     for (const chunk of chunks) {
       const embedding = await openai.embeddings.create({
-        model: "text-embedding-3-small",
+        model: "text-embedding-ada-002",
         input: chunk,
-        encoding_format: "float",
       });
 
       const vector = embedding.data[0].embedding;
@@ -62,9 +74,19 @@ const loadSampleData = async () => {
         $vector: vector,
         text: chunk,
       });
-      console.log(res);
+      console.log("Inserted chunk:", res);
     }
   }
 };
 
-createCollection().then(() => loadSampleData());
+const initializeDatabase = async () => {
+  try {
+    await createCollection();
+    await processMedicalHistory();
+    console.log("Database initialized with medical history.");
+  } catch (error) {
+    console.error("Error initializing database:", error);
+  }
+};
+
+initializeDatabase();
