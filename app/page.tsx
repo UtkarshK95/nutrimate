@@ -18,7 +18,16 @@ const Home = () => {
     handleSubmit,
   } = useChat();
 
-  const noMessages = false;
+  const noMessages = !messages || messages.length === 0;
+
+  const handlePrompt = (promptText) => {
+    const msg: Message = {
+      id: crypto.randomUUID(),
+      content: promptText,
+      role: "user",
+    };
+    append(msg);
+  };
 
   return (
     <main>
@@ -28,27 +37,30 @@ const Home = () => {
         {noMessages ? (
           <>
             <p className="starter-text">
-              The Ultimate place for Formula One super fans! Ask F1GPT anything
-              about the fantastic topic of F1 racing and it will come back with
-              the most up-to-date answers. We hope you enjoy!
+              Your Trusted Nutrition Expert, Powered by Gen AI and Backed by
+              Science.
             </p>
             <br />
-            <PromptSuggestionsRow />
+            <PromptSuggestionsRow onPromptClick={handlePrompt} />
           </>
         ) : (
           <>
-            {/*map messages onto text bubbles*/}
-            <LoadingBubble />
+            {messages.map((message, index) => (
+              <Bubble key={`message-${index}`} message={message} />
+            ))}
+            {isLoading && <LoadingBubble />}
           </>
         )}
       </section>
-      <input
-        className="question-box"
-        onChange={handleInputChange}
-        value={input}
-        placeholder="Ask me something..."
-      />
-      <input type="submit" />
+      <form onSubmit={handleSubmit}>
+        <input
+          className="question-box"
+          onChange={handleInputChange}
+          value={input}
+          placeholder="Ask me something..."
+        />
+        <input type="submit" />
+      </form>
     </main>
   );
 };
