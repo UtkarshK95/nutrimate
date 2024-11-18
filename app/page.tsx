@@ -4,6 +4,9 @@ import Image from "next/image";
 import logo from "./assets/logo.png";
 import { useChat } from "ai/react";
 import { Message } from "ai";
+import Bubble from "./components/Bubble";
+import LoadingBubble from "./components/LoadingBubble";
+import PromptSuggestionsRow from "./components/PromptSuggestionsRow";
 
 const Home = () => {
   const {
@@ -30,23 +33,14 @@ const Home = () => {
               the most up-to-date answers. We hope you enjoy!
             </p>
             <br />
-            {/*<PromptSuggestion Row />*/}
+            <PromptSuggestionsRow />
           </>
         ) : (
           <>
             {/*map messages onto text bubbles*/}
-            {/*<LoadingBubble/>*/}
+            <LoadingBubble />
           </>
         )}
-        <form onSubmit={handleSubmit}>
-          <input
-            className="question-box"
-            onChange={handleInputChange}
-            value={input}
-            placeholder="Ask me something..."
-          />
-          <input type="submit" />
-        </form>
       </section>
       <input
         className="question-box"
@@ -54,7 +48,7 @@ const Home = () => {
         value={input}
         placeholder="Ask me something..."
       />
-      <input type="submit" />I
+      <input type="submit" />
     </main>
   );
 };
