@@ -31,7 +31,15 @@ const Home = () => {
 
   return (
     <main>
-      <Image src={logo} width={250} alt="logo" />
+      <div style={{ width: "100%", maxWidth: "600px", margin: "0 auto" }}>
+        <Image
+          src={logo}
+          alt="logo"
+          layout="responsive"
+          width={100} // These represent the aspect ratio, not pixel size
+          height={50} // For a 2:1 aspect ratio/>
+        />
+      </div>
       <section className={noMessages ? "" : "populated"}></section>
       <section>
         {noMessages ? (
