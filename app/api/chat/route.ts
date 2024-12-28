@@ -70,8 +70,7 @@ export async function POST(req: Request) {
 
     const stream = OpenAIStream(response);
     return new StreamingTextResponse(stream);
-  } catch (err) {
-    console.error("Error occurred while processing the request:", err);
-    throw err; // Re-throw the error if necessary
+  } catch {
+    throw new Error("An error occurred while processing the request."); // Generic error handling
   }
 }
