@@ -41,9 +41,8 @@ export async function POST(req: Request) {
       const document = await cursor.toArray();
       const docsMap = document?.map((doc) => doc.text);
       docContext = JSON.stringify(docsMap);
-    } catch (err) {
-      console.log("Error querying db...");
-      docContext = "";
+    } catch {
+      throw new Error("An error occurred while querying db."); // Generic error handling
     }
     const template = {
       role: "system",
