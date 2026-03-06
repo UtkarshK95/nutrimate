@@ -20,7 +20,17 @@ import {
   UploadCloud,
   AlertCircle,
   FileText,
+  ExternalLink,
 } from "lucide-react";
+
+const RESEARCH_LINKS = [
+  { name: "PubMed", url: "https://pubmed.ncbi.nlm.nih.gov/", desc: "NIH biomedical literature", color: "text-blue-600 dark:text-blue-400" },
+  { name: "NIH NLM", url: "https://www.nlm.nih.gov/", desc: "National Library of Medicine", color: "text-emerald-600 dark:text-emerald-400" },
+  { name: "Cochrane Library", url: "https://www.cochranelibrary.com/", desc: "Systematic reviews", color: "text-violet-600 dark:text-violet-400" },
+  { name: "bioRxiv", url: "https://www.biorxiv.org/", desc: "Biology preprints", color: "text-orange-600 dark:text-orange-400" },
+  { name: "Semantic Scholar", url: "https://www.semanticscholar.org/", desc: "AI-powered research search", color: "text-pink-600 dark:text-pink-400" },
+  { name: "ResearchGate", url: "https://www.researchgate.net/", desc: "Papers & author profiles", color: "text-teal-600 dark:text-teal-400" },
+];
 
 /** Renders the structured markdown summary from Gemini. */
 function SummaryBlock({ text }: { text: string }) {
@@ -134,56 +144,80 @@ export default function ResearchPage() {
   return (
     <>
       <Header title="Research Library" />
-      <div className="mx-auto max-w-3xl px-6 py-8 space-y-6">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 py-6 sm:py-8 space-y-6">
 
         {/* Upload card */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Upload Research Paper</CardTitle>
-            <CardDescription>
-              PDF only · max 20 MB. The AI will summarise and index it for chat.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,application/pdf"
-              className="hidden"
-              aria-label="Select PDF file"
-              onChange={handleFileChange}
-              disabled={isUploading}
-            />
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              aria-label="Upload a research PDF"
-            >
-              {isUploading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-                  Processing… this may take a minute
-                </>
-              ) : (
-                <>
-                  <UploadCloud className="mr-2 h-4 w-4" aria-hidden="true" />
-                  Upload PDF
-                </>
-              )}
-            </Button>
-            {uploadState.status === "error" && (
-              <p
-                className="flex items-center gap-1.5 text-sm text-destructive"
-                role="alert"
-                aria-live="assertive"
+        <Card className="border-dashed border-2 border-border/60">
+          <CardContent className="pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-emerald-400 to-teal-500 shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
+                <BookOpen className="h-5 w-5 text-white" aria-hidden="true" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm">Upload Research Paper</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  PDF only · max 20 MB · the AI will summarise and index it for chat
+                </p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,application/pdf"
+                className="hidden"
+                aria-label="Select PDF file"
+                onChange={handleFileChange}
+                disabled={isUploading}
+              />
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className="shrink-0 bg-linear-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-sm"
+                aria-label="Upload a research PDF"
               >
+                {isUploading ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Processing…</>
+                ) : (
+                  <><UploadCloud className="mr-2 h-4 w-4" aria-hidden="true" />Upload PDF</>
+                )}
+              </Button>
+            </div>
+            {uploadState.status === "error" && (
+              <p className="mt-3 flex items-center gap-1.5 text-sm text-destructive" role="alert" aria-live="assertive">
                 <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                 {uploadState.message}
               </p>
             )}
           </CardContent>
         </Card>
+
+        {/* Research quick links */}
+        <div className="rounded-xl border bg-card px-5 py-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-violet-100 dark:bg-violet-950/60">
+              <ExternalLink className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" aria-hidden="true" />
+            </div>
+            <p className="text-sm font-semibold">Find Research Papers</p>
+            <span className="ml-auto text-xs text-muted-foreground">Opens external site</span>
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {RESEARCH_LINKS.map(({ name, url, desc, color }) => (
+              <a
+                key={name}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 rounded-lg border bg-muted/40 px-3 py-2.5 transition-all hover:bg-muted hover:shadow-sm"
+              >
+                <span className={`mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full ${color.replace("text-", "bg-")}`} aria-hidden="true" />
+                <div className="min-w-0 flex-1">
+                  <p className={`text-xs font-semibold ${color}`}>{name}</p>
+                  <p className="text-[11px] text-muted-foreground truncate">{desc}</p>
+                </div>
+                <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+        </div>
 
         {/* Document list */}
         {loading ? (
@@ -210,11 +244,11 @@ export default function ResearchPage() {
           </div>
         ) : docs.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
-            <BookOpen className="h-10 w-10" aria-hidden="true" />
-            <p className="font-medium">No research papers yet</p>
-            <p className="text-sm">
-              Upload a PDF above and the AI will summarise and index it.
-            </p>
+            <div className="rounded-2xl bg-muted p-5">
+              <BookOpen className="h-8 w-8 text-muted-foreground/50" aria-hidden="true" />
+            </div>
+            <p className="font-medium text-foreground">No research papers yet</p>
+            <p className="text-sm max-w-xs">Upload a PDF above and the AI will summarise and index it for your chats.</p>
           </div>
         ) : (
           <ul className="space-y-4" role="list" aria-label="Research documents">

@@ -14,7 +14,8 @@ export async function readProfile(): Promise<HealthProfile> {
   try {
     await ensureDataDir();
     const raw = await fs.readFile(PROFILE_PATH, "utf-8");
-    return JSON.parse(raw) as HealthProfile;
+    // Merge with EMPTY_PROFILE so new fields default gracefully for old saved data
+    return { ...EMPTY_PROFILE, ...(JSON.parse(raw) as Partial<HealthProfile>) };
   } catch {
     return { ...EMPTY_PROFILE };
   }

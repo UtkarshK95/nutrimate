@@ -115,45 +115,56 @@ export default function FitnessPage() {
   return (
     <>
       <Header title="Fitness Data" />
-      <div className="mx-auto max-w-4xl px-6 py-8 space-y-6">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-6 sm:py-8 space-y-6">
 
         {/* Upload */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Import Fitness Data</CardTitle>
-            <CardDescription>
-              Accepts <strong>CSV</strong>, <strong>Apple Health XML</strong> (export.xml), or <strong>Fitbit JSON</strong> exports · max 50 MB
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".csv,.xml,.json,text/csv,application/xml,application/json"
-              className="hidden"
-              aria-label="Select fitness data file"
-              onChange={handleFileChange}
-              disabled={isUploading}
-            />
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              aria-label="Upload fitness data file"
-            >
-              {isUploading ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Processing…</>
-              ) : (
-                <><UploadCloud className="mr-2 h-4 w-4" aria-hidden="true" />Upload File</>
-              )}
-            </Button>
+        <Card className="border-dashed border-2 border-border/60">
+          <CardContent className="pt-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-emerald-400 to-teal-500 shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
+                <Activity className="h-5 w-5 text-white" aria-hidden="true" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm">Import Fitness Data</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  CSV, Apple Health XML, or Fitbit JSON · max 50 MB
+                </p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,.xml,.json,text/csv,application/xml,application/json"
+                className="hidden"
+                aria-label="Select fitness data file"
+                onChange={handleFileChange}
+                disabled={isUploading}
+              />
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className="shrink-0 bg-linear-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-sm"
+                aria-label="Upload fitness data file"
+              >
+                {isUploading ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Processing…</>
+                ) : (
+                  <><UploadCloud className="mr-2 h-4 w-4" aria-hidden="true" />Upload File</>
+                )}
+              </Button>
+            </div>
 
             {/* Format hints */}
-            <div className="rounded-md border bg-muted/40 p-3 text-xs text-muted-foreground space-y-1">
-              <p className="font-medium text-foreground">Format guide</p>
-              <p><strong>CSV</strong> — needs a date column + any of: steps, calories, active minutes, heart rate, sleep</p>
-              <p><strong>Apple Health</strong> — export from Health app → Profile → Export All Health Data → share export.xml</p>
-              <p><strong>Fitbit</strong> — export from fitbit.com → Settings → Data Export, upload activities-*.json</p>
+            <div className="grid sm:grid-cols-3 gap-2 text-xs text-muted-foreground">
+              {[
+                { label: "CSV", desc: "Date column + steps, calories, HR, sleep" },
+                { label: "Apple Health", desc: "Health app → Profile → Export All → share export.xml" },
+                { label: "Fitbit", desc: "fitbit.com → Settings → Data Export → activities-*.json" },
+              ].map(({ label, desc }) => (
+                <div key={label} className="rounded-lg bg-muted/50 px-3 py-2 space-y-0.5">
+                  <p className="font-semibold text-foreground">{label}</p>
+                  <p>{desc}</p>
+                </div>
+              ))}
             </div>
 
             {uploadState.status === "error" && (
@@ -190,9 +201,11 @@ export default function FitnessPage() {
           </div>
         ) : imports.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
-            <Activity className="h-10 w-10" aria-hidden="true" />
-            <p className="font-medium">No fitness data imported yet</p>
-            <p className="text-sm">Upload a file above to start tracking your activity.</p>
+            <div className="rounded-2xl bg-muted p-5">
+              <Activity className="h-8 w-8 text-muted-foreground/50" aria-hidden="true" />
+            </div>
+            <p className="font-medium text-foreground">No fitness data imported yet</p>
+            <p className="text-sm max-w-xs">Upload a CSV, Apple Health, or Fitbit export to start tracking your activity.</p>
           </div>
         ) : (
           <ul className="space-y-4" role="list" aria-label="Fitness imports">
@@ -203,7 +216,7 @@ export default function FitnessPage() {
               return (
                 <li key={imp.id}>
                   <Card>
-                    <CardHeader className="pb-0">
+                    <CardHeader className="pb-4">
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
@@ -237,14 +250,14 @@ export default function FitnessPage() {
                       {imp.weeklyAggregates.length > 0 && (
                         <button
                           onClick={() => setExpandedId(isExpanded ? null : imp.id)}
-                          className="mt-3 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed py-2 text-xs font-medium text-muted-foreground transition-all hover:border-emerald-300 hover:bg-emerald-50/60 hover:text-emerald-700 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/30 dark:hover:text-emerald-400"
                           aria-expanded={isExpanded}
                           aria-label={isExpanded ? "Hide weekly stats" : "Show weekly stats"}
                         >
                           {isExpanded ? (
                             <><ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />Hide weekly stats</>
                           ) : (
-                            <><ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />Show weekly stats ({imp.weeklyAggregates.length} weeks)</>
+                            <><ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />Show {imp.weeklyAggregates.length} weeks of data</>
                           )}
                         </button>
                       )}

@@ -23,6 +23,7 @@ function buildProfileContext(profile: HealthProfile): string {
   if (profile.medications.length) parts.push(`Medications: ${profile.medications.join(", ")}`);
   if (profile.allergies.length) parts.push(`Allergies: ${profile.allergies.join(", ")}`);
   if (profile.goals) parts.push(`Health goals: ${profile.goals.slice(0, 200)}`);
+  if (profile.personalNotes) parts.push(`Personal notes (habits/mental health/diet): ${profile.personalNotes.slice(0, 200)}`);
   return parts.length ? parts.join(". ") : "No profile set up yet.";
 }
 

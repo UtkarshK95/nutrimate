@@ -21,7 +21,17 @@ import {
   AlertCircle,
   ChevronDown,
   ChevronUp,
+  ExternalLink,
 } from "lucide-react";
+
+const LAB_LINKS = [
+  { name: "Dr Lal PathLabs", url: "https://www.lalpathlabs.com/book-test", color: "text-red-600 dark:text-red-400" },
+  { name: "Apollo Diagnostics", url: "https://www.apollodiagnostics.in/", color: "text-blue-600 dark:text-blue-400" },
+  { name: "Thyrocare", url: "https://www.thyrocare.com/", color: "text-emerald-600 dark:text-emerald-400" },
+  { name: "Metropolis", url: "https://www.metropolisindia.com/", color: "text-violet-600 dark:text-violet-400" },
+  { name: "SRL Diagnostics", url: "https://srlworld.com/", color: "text-orange-600 dark:text-orange-400" },
+  { name: "Redcliffe Labs", url: "https://redcliffelabs.com/", color: "text-pink-600 dark:text-pink-400" },
+];
 
 const STATUS_STYLES: Record<BiomarkerStatus, string> = {
   normal: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300",
@@ -101,46 +111,77 @@ export default function LabReportsPage() {
   return (
     <>
       <Header title="Lab Reports" />
-      <div className="mx-auto max-w-3xl px-6 py-8 space-y-6">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 py-6 sm:py-8 space-y-6">
 
         {/* Upload */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Upload Lab Report</CardTitle>
-            <CardDescription>
-              PDF only · max 20 MB. AI will extract biomarkers and track them over time.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,application/pdf"
-              className="hidden"
-              aria-label="Select lab report PDF"
-              onChange={handleFileChange}
-              disabled={isUploading}
-            />
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isUploading}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              aria-label="Upload lab report PDF"
-            >
-              {isUploading ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Extracting biomarkers…</>
-              ) : (
-                <><UploadCloud className="mr-2 h-4 w-4" aria-hidden="true" />Upload PDF</>
-              )}
-            </Button>
+        <Card className="border-dashed border-2 border-border/60">
+          <CardContent className="pt-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-emerald-400 to-teal-500 shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
+                <FlaskConical className="h-5 w-5 text-white" aria-hidden="true" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-sm">Upload Lab Report</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  PDF only · max 20 MB · AI will extract biomarkers and track them over time
+                </p>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,application/pdf"
+                className="hidden"
+                aria-label="Select lab report PDF"
+                onChange={handleFileChange}
+                disabled={isUploading}
+              />
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploading}
+                className="shrink-0 bg-linear-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-sm"
+                aria-label="Upload lab report PDF"
+              >
+                {isUploading ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />Extracting…</>
+                ) : (
+                  <><UploadCloud className="mr-2 h-4 w-4" aria-hidden="true" />Upload PDF</>
+                )}
+              </Button>
+            </div>
             {uploadState.status === "error" && (
-              <p className="flex items-center gap-1.5 text-sm text-destructive" role="alert" aria-live="assertive">
+              <p className="mt-3 flex items-center gap-1.5 text-sm text-destructive" role="alert" aria-live="assertive">
                 <AlertCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
                 {uploadState.message}
               </p>
             )}
           </CardContent>
         </Card>
+
+        {/* Book a test */}
+        <div className="rounded-xl border bg-card px-5 py-4">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-violet-100 dark:bg-violet-950/60">
+              <ExternalLink className="h-3.5 w-3.5 text-violet-600 dark:text-violet-400" aria-hidden="true" />
+            </div>
+            <p className="text-sm font-semibold">Book a Blood Test</p>
+            <span className="ml-auto text-xs text-muted-foreground">Opens external site</span>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {LAB_LINKS.map(({ name, url, color }) => (
+              <a
+                key={name}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-lg border bg-muted/40 px-3 py-2.5 text-xs font-medium transition-all hover:bg-muted hover:shadow-sm"
+              >
+                <span className={`h-1.5 w-1.5 rounded-full ${color.replace("text-", "bg-")}`} aria-hidden="true" />
+                <span className="flex-1 truncate">{name}</span>
+                <ExternalLink className="h-3 w-3 shrink-0 text-muted-foreground" aria-hidden="true" />
+              </a>
+            ))}
+          </div>
+        </div>
 
         {/* Report list */}
         {loading ? (
@@ -167,9 +208,11 @@ export default function LabReportsPage() {
           </div>
         ) : reports.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
-            <FlaskConical className="h-10 w-10" aria-hidden="true" />
-            <p className="font-medium">No lab reports yet</p>
-            <p className="text-sm">Upload a blood report PDF to start tracking your biomarkers.</p>
+            <div className="rounded-2xl bg-muted p-5">
+              <FlaskConical className="h-8 w-8 text-muted-foreground/50" aria-hidden="true" />
+            </div>
+            <p className="font-medium text-foreground">No lab reports yet</p>
+            <p className="text-sm max-w-xs">Upload a blood test PDF to start tracking your biomarkers over time.</p>
           </div>
         ) : (
           <ul className="space-y-4" role="list" aria-label="Lab reports">
@@ -182,7 +225,7 @@ export default function LabReportsPage() {
               return (
                 <li key={report.id}>
                   <Card>
-                    <CardHeader className="pb-0">
+                    <CardHeader className="pb-4">
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0">
                           <CardTitle className="text-base truncate">{report.fileName}</CardTitle>
@@ -221,14 +264,14 @@ export default function LabReportsPage() {
                       {report.biomarkers.length > 0 && (
                         <button
                           onClick={() => setExpandedId(isExpanded ? null : report.id)}
-                          className="mt-3 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed py-2 text-xs font-medium text-muted-foreground transition-all hover:border-emerald-300 hover:bg-emerald-50/60 hover:text-emerald-700 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/30 dark:hover:text-emerald-400"
                           aria-expanded={isExpanded}
                           aria-label={isExpanded ? "Hide biomarkers" : "Show biomarkers"}
                         >
                           {isExpanded ? (
                             <><ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />Hide biomarkers</>
                           ) : (
-                            <><ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />Show biomarkers</>
+                            <><ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />Show {report.biomarkers.length} biomarkers</>
                           )}
                         </button>
                       )}

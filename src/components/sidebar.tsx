@@ -25,18 +25,23 @@ export function Sidebar() {
 
   return (
     <aside
-      className="flex h-full w-60 flex-col border-r bg-background"
+      className="flex h-full w-60 flex-col border-r bg-card"
       aria-label="Main navigation"
     >
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2 border-b px-5">
-        <Salad className="h-6 w-6 text-emerald-500" aria-hidden="true" />
-        <span className="text-lg font-semibold tracking-tight">Nutrimate</span>
+      <div className="flex h-16 items-center gap-2.5 border-b px-5">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-emerald-400 to-teal-500 shadow-sm shadow-emerald-200 dark:shadow-emerald-900/40">
+          <Salad className="h-4 w-4 text-white" aria-hidden="true" />
+        </div>
+        <span className="text-lg font-bold tracking-tight">Nutrimate</span>
       </div>
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto px-3 py-4">
-        <ul className="space-y-1" role="list">
+        <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50">
+          Menu
+        </p>
+        <ul className="space-y-0.5" role="list">
           {navItems.map(({ href, label, icon: Icon }) => {
             const isActive =
               pathname === href || pathname.startsWith(href + "/");
@@ -47,27 +52,33 @@ export function Sidebar() {
                   aria-label={label}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
                     isActive
-                      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 shadow-sm"
+                      : "text-muted-foreground hover:bg-teal-50 hover:text-teal-800 dark:hover:bg-teal-950/30 dark:hover:text-teal-300"
                   )}
                 >
-                  <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  <div className={cn(
+                    "flex h-6 w-6 items-center justify-center rounded-md transition-colors",
+                    isActive
+                      ? "bg-emerald-100 dark:bg-emerald-900/60"
+                      : ""
+                  )}>
+                    <Icon className={cn(
+                      "h-3.5 w-3.5 shrink-0",
+                      isActive ? "text-emerald-600 dark:text-emerald-400" : ""
+                    )} aria-hidden="true" />
+                  </div>
                   {label}
+                  {isActive && (
+                    <span className="ml-auto h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+                  )}
                 </Link>
               </li>
             );
           })}
         </ul>
       </nav>
-
-      {/* Bottom badge */}
-      <div className="border-t px-4 py-3">
-        <p className="text-xs text-muted-foreground">
-          100% local &mdash; your data stays on your machine
-        </p>
-      </div>
     </aside>
   );
 }

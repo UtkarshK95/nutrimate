@@ -78,7 +78,7 @@ export default function ProfilePage() {
     return (
       <>
         <Header title="Health Profile" />
-        <div className="mx-auto max-w-2xl px-6 py-8 space-y-6" aria-busy="true" aria-label="Loading profile">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 py-6 sm:py-8 space-y-6" aria-busy="true" aria-label="Loading profile">
           <div className="rounded-xl border bg-card p-6 space-y-4">
             <Skeleton className="h-5 w-32" />
             <div className="space-y-3">
@@ -117,7 +117,7 @@ export default function ProfilePage() {
   return (
     <>
       <Header title="Health Profile" />
-      <div className="mx-auto max-w-2xl px-6 py-8">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6 py-6 sm:py-8">
         <form onSubmit={handleSubmit} noValidate aria-label="Health profile form">
           <div className="space-y-6">
             {/* Basic info */}
@@ -252,6 +252,30 @@ export default function ProfilePage() {
               </CardContent>
             </Card>
 
+            {/* Personal Notes */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Personal Notes</CardTitle>
+                <CardDescription>
+                  Mental health, sleep habits, diet preferences, stress levels, lifestyle context. The AI factors this into every response.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Textarea
+                  id="personalNotes"
+                  value={profile.personalNotes}
+                  onChange={(e) => updateField("personalNotes", e.target.value)}
+                  placeholder="e.g. Mostly vegetarian, sleep 6 hrs, high-stress job, mild anxiety, intermittent fasting 16:8, no alcohol…"
+                  rows={5}
+                  maxLength={2000}
+                  aria-label="Personal notes"
+                />
+                <p className="mt-1.5 text-right text-xs text-muted-foreground">
+                  {profile.personalNotes.length}/2000
+                </p>
+              </CardContent>
+            </Card>
+
             {/* Actions */}
             <div className="flex items-center justify-between">
               {profile.updatedAt && (
@@ -287,7 +311,7 @@ export default function ProfilePage() {
                 <Button
                   type="submit"
                   disabled={saveState === "saving"}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="bg-linear-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-sm"
                   aria-label="Save health profile"
                 >
                   {saveState === "saving" ? (

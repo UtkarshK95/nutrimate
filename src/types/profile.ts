@@ -6,6 +6,7 @@ export interface HealthProfile {
   conditions: string[];
   allergies: string[];
   goals: string;
+  personalNotes: string;
   updatedAt: string;
 }
 
@@ -17,5 +18,6 @@ export const EMPTY_PROFILE: HealthProfile = {
   conditions: [],
   allergies: [],
   goals: "",
+  personalNotes: "",
   updatedAt: "",
 };
