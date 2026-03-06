@@ -1,28 +1,20 @@
-import fs from "fs/promises";
-import path from "path";
+import { Redis } from "@upstash/redis";
 import type { FitnessEntry, FitnessImport, WeeklyAggregate } from "@/types/fitness";
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const FITNESS_PATH = path.join(DATA_DIR, "fitness.json");
-
-async function ensureDataDir(): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-}
+const redis = Redis.fromEnv();
+const KEY = "nutrimate:fitness";
 
 export async function readFitnessImports(): Promise<FitnessImport[]> {
   try {
-    await ensureDataDir();
-    const raw = await fs.readFile(FITNESS_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as { imports: FitnessImport[] };
-    return parsed.imports ?? [];
+    const data = await redis.get<{ imports: FitnessImport[] }>(KEY);
+    return data?.imports ?? [];
   } catch {
     return [];
   }
 }
 
 async function writeFitnessImports(imports: FitnessImport[]): Promise<void> {
-  await ensureDataDir();
-  await fs.writeFile(FITNESS_PATH, JSON.stringify({ imports }, null, 2), "utf-8");
+  await redis.set(KEY, { imports });
 }
 
 export async function addFitnessImport(imp: FitnessImport): Promise<void> {
@@ -39,7 +31,7 @@ export async function deleteFitnessImport(id: string): Promise<void> {
 function weekStart(dateStr: string): string {
   const d = new Date(dateStr + "T12:00:00Z");
   const day = d.getUTCDay();
-  const diff = day === 0 ? -6 : 1 - day; // shift to Monday
+  const diff = day === 0 ? -6 : 1 - day;
   d.setUTCDate(d.getUTCDate() + diff);
   return d.toISOString().slice(0, 10);
 }
@@ -76,9 +68,8 @@ export function aggregateToWeekly(entries: FitnessEntry[]): WeeklyAggregate[] {
     }));
 }
 
-/** Generate a plain-text summary of recent weekly aggregates for RAG embedding */
 export function fitnessToText(imp: FitnessImport): string {
-  const recent = imp.weeklyAggregates.slice(-8); // last 8 weeks
+  const recent = imp.weeklyAggregates.slice(-8);
   const lines = [
     `Fitness data from ${imp.fileName} (${imp.fileType}), covering ${imp.dateRange.from} to ${imp.dateRange.to}.`,
     `Weekly averages (most recent ${recent.length} weeks):`,

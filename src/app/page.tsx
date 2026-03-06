@@ -48,9 +48,9 @@ const features = [
   },
   {
     icon: ShieldCheck,
-    title: "100% Local",
+    title: "Password Protected",
     description:
-      "All data lives in a /data folder on your machine. No accounts, no cloud database, no data harvesting.",
+      "Access is gated behind a private password. Your health data is stored securely and only accessible to you.",
   },
 ];
 
@@ -80,18 +80,18 @@ export default function Home() {
         <main className="flex-1">
           <section className="mx-auto flex max-w-4xl flex-col items-center gap-6 px-6 py-24 text-center md:py-32">
             <Badge variant="secondary" className="text-xs">
-              Local-first · No account required
+              RAG-powered · Private by design
             </Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
               Your personal{" "}
               <span className="text-emerald-500">health AI</span>,
               <br />
-              running on your machine
+              built around your data
             </h1>
             <p className="max-w-2xl text-lg text-muted-foreground">
               Nutrimate combines your health profile, lab reports, fitness data,
               and medical research to give you deeply personalised insights —
-              privately, with no data leaving your device.
+              grounded in your actual health history, not generic advice.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button
