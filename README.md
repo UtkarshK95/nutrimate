@@ -49,7 +49,7 @@ npm install
 
 # Set up environment variables
 cp .env.example .env.local
-# Add your GEMINI_API_KEY to .env.local
+# Edit .env.local and fill in your GEMINI_API_KEY and SITE_PASSWORD
 
 # Run the development server
 npm run dev
@@ -59,11 +59,23 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## 🔒 Password Protection
+
+All `/dashboard` routes are protected by a password set via the `SITE_PASSWORD` environment variable. The landing page is public.
+
+- On first visit, click **Get Started** or **Open App** to open the password modal
+- On success, an `httpOnly` cookie is set for 7 days — no re-entry needed
+- To lock yourself out for testing, delete the `site-password` cookie in DevTools → Application → Cookies
+
+**Never commit your real password.** Only `.env.example` (with a placeholder) is tracked by git.
+
+---
+
 ## 📁 Project Structure
 
-```
+```text
 nutrimate/
-├── app/
+├── src/app/
 │   ├── api/              # API routes (chat, ingest, profile)
 │   ├── dashboard/        # Main app sections
 │   │   ├── chat/

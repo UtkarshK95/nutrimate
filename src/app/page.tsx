@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
 import {
   Salad,
   MessageSquare,
@@ -11,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DisclaimerModal } from "@/components/disclaimer-modal";
+import { PasswordModal } from "@/components/password-modal";
 
 const features = [
   {
@@ -52,9 +55,12 @@ const features = [
 ];
 
 export default function Home() {
+  const [pwOpen, setPwOpen] = useState(false);
+
   return (
     <>
       <DisclaimerModal />
+      <PasswordModal open={pwOpen} onOpenChange={setPwOpen} />
 
       <div className="flex min-h-screen flex-col bg-background">
         {/* Nav */}
@@ -65,10 +71,8 @@ export default function Home() {
               Nutrimate
             </span>
           </div>
-          <Button asChild size="sm">
-            <Link href="/dashboard/chat" aria-label="Open dashboard">
-              Open App
-            </Link>
+          <Button size="sm" onClick={() => setPwOpen(true)} aria-label="Open dashboard">
+            Open App
           </Button>
         </header>
 
@@ -91,16 +95,12 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Button
-                asChild
                 size="lg"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                onClick={() => setPwOpen(true)}
+                aria-label="Get started with Nutrimate"
               >
-                <Link
-                  href="/dashboard/chat"
-                  aria-label="Get started with Nutrimate"
-                >
-                  Get started
-                </Link>
+                Get started
               </Button>
               <Button asChild variant="outline" size="lg">
                 <a
