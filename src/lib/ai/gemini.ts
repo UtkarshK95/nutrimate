@@ -51,6 +51,43 @@ export async function simplifyResearch(
   return generate(userPrompt, systemPrompt);
 }
 
+import type { Biomarker } from "@/types/documents";
+
+/**
+ * Extract biomarkers from lab report text.
+ * Returns a structured array; falls back to empty array on parse failure.
+ */
+export async function extractBiomarkers(text: string): Promise<{ biomarkers: Biomarker[]; reportDate: string }> {
+  // Pass first 6000 chars — enough for most blood panels
+  const excerpt = text.slice(0, 6000);
+  const systemPrompt =
+    "You are a medical data extraction assistant. Extract structured data from lab reports. " +
+    "Respond only with valid JSON, no markdown fences, no explanation.";
+  const userPrompt =
+    `Extract all biomarkers from this lab report and return JSON in this exact shape:\n` +
+    `{"reportDate":"YYYY-MM-DD or empty string if not found","biomarkers":[{"name":"string","value":"string","unit":"string","referenceRange":"string","status":"normal"|"high"|"low"|"unknown"}]}\n\n` +
+    `Rules:\n` +
+    `- Include every test result you can find (CBC, metabolic panel, lipids, hormones, vitamins, etc.)\n` +
+    `- status: compare value to referenceRange. If value is above range → "high", below → "low", within → "normal", can't tell → "unknown"\n` +
+    `- If unit or referenceRange are missing, use empty string\n` +
+    `- Return only the JSON object, nothing else\n\n` +
+    `Lab report text:\n${excerpt}`;
+
+  const raw = await generate(userPrompt, systemPrompt);
+
+  try {
+    // Strip any accidental markdown fences
+    const cleaned = raw.replace(/^```(?:json)?\n?/i, "").replace(/\n?```$/i, "").trim();
+    const parsed = JSON.parse(cleaned) as { biomarkers: Biomarker[]; reportDate: string };
+    return {
+      biomarkers: Array.isArray(parsed.biomarkers) ? parsed.biomarkers : [],
+      reportDate: parsed.reportDate ?? "",
+    };
+  } catch {
+    return { biomarkers: [], reportDate: "" };
+  }
+}
+
 export interface ChatMessage {
   role: "user" | "model";
   content: string;
