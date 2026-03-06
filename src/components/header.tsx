@@ -1,19 +1,23 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 interface HeaderProps {
   title: string;
+  children?: ReactNode;
 }
 
-export function Header({ title }: HeaderProps) {
+export function Header({ title, children }: HeaderProps) {
   const { theme, setTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b bg-background px-6">
       <h1 className="text-lg font-semibold">{title}</h1>
+      <div className="flex items-center gap-2">
+        {children}
       <Button
         variant="ghost"
         size="icon"
@@ -29,6 +33,7 @@ export function Header({ title }: HeaderProps) {
           aria-hidden="true"
         />
       </Button>
+      </div>
     </header>
   );
 }

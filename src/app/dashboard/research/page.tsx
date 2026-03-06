@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { ResearchDocument } from "@/types/documents";
 import {
   BookOpen,
@@ -186,8 +187,21 @@ export default function ResearchPage() {
 
         {/* Document list */}
         {loading ? (
-          <div className="flex justify-center py-12" aria-live="polite" aria-label="Loading documents">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden="true" />
+          <div className="space-y-4" aria-busy="true" aria-label="Loading documents">
+            {[1, 2].map((n) => (
+              <div key={n} className="rounded-xl border bg-card p-5 space-y-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-32" />
+                  </div>
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                </div>
+                <Skeleton className="h-3 w-full" />
+                <Skeleton className="h-3 w-5/6" />
+                <Skeleton className="h-3 w-4/6" />
+              </div>
+            ))}
           </div>
         ) : loadError ? (
           <div className="flex flex-col items-center gap-2 py-12 text-center" role="alert">

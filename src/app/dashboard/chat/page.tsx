@@ -3,12 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { Send, Loader2, Salad, AlertCircle } from "lucide-react";
+import { Send, Loader2, Salad, AlertCircle, Trash2 } from "lucide-react";
 
 interface Message {
   role: "user" | "model";
   content: string;
+  timestamp: string;
 }
 
 const STARTERS = [
@@ -76,13 +78,52 @@ function inlineBold(text: string): string {
   return text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
 }
 
+function HistorySkeleton() {
+  return (
+    <div className="space-y-6" aria-label="Loading chat history" aria-busy="true">
+      {/* Model message skeleton */}
+      <div className="flex gap-3">
+        <Skeleton className="mt-0.5 h-7 w-7 shrink-0 rounded-full" />
+        <Skeleton className="h-16 w-64 rounded-2xl rounded-tl-sm" />
+      </div>
+      {/* User message skeleton */}
+      <div className="flex gap-3 flex-row-reverse">
+        <Skeleton className="h-10 w-48 rounded-2xl rounded-tr-sm" />
+      </div>
+      {/* Model message skeleton */}
+      <div className="flex gap-3">
+        <Skeleton className="mt-0.5 h-7 w-7 shrink-0 rounded-full" />
+        <Skeleton className="h-20 w-72 rounded-2xl rounded-tl-sm" />
+      </div>
+    </div>
+  );
+}
+
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Load history on mount
+  useEffect(() => {
+    async function loadHistory() {
+      try {
+        const res = await fetch("/api/chat/history");
+        if (!res.ok) throw new Error();
+        const data = await res.json() as { messages: Message[] };
+        setMessages(data.messages ?? []);
+      } catch {
+        // Silent — start with empty state
+      } finally {
+        setHistoryLoading(false);
+      }
+    }
+    loadHistory();
+  }, []);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -90,10 +131,11 @@ export default function ChatPage() {
   }, [messages, loading]);
 
   async function sendMessage(content: string) {
-    if (!content.trim() || loading) return;
+    if (!content.trim() || loading || historyLoading) return;
     setError(null);
 
-    const userMsg: Message = { role: "user", content: content.trim() };
+    const now = new Date().toISOString();
+    const userMsg: Message = { role: "user", content: content.trim(), timestamp: now };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
     setInput("");
@@ -109,7 +151,20 @@ export default function ChatPage() {
       const data = await res.json() as { content?: string; error?: string };
       if (!res.ok) throw new Error(data.error ?? "Chat failed");
 
-      setMessages([...newMessages, { role: "model", content: data.content! }]);
+      const modelMsg: Message = {
+        role: "model",
+        content: data.content!,
+        timestamp: new Date().toISOString(),
+      };
+      const withReply = [...newMessages, modelMsg];
+      setMessages(withReply);
+
+      // Persist history (fire-and-forget)
+      fetch("/api/chat/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: withReply }),
+      }).catch(() => {});
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       // Remove the user message that failed
@@ -120,6 +175,16 @@ export default function ChatPage() {
     }
   }
 
+  async function handleClearHistory() {
+    if (!window.confirm("Clear all chat history? This cannot be undone.")) return;
+    try {
+      await fetch("/api/chat/history", { method: "DELETE" });
+      setMessages([]);
+    } catch {
+      setError("Failed to clear history.");
+    }
+  }
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -127,15 +192,31 @@ export default function ChatPage() {
     }
   }
 
-  const isEmpty = messages.length === 0;
+  const isEmpty = !historyLoading && messages.length === 0;
 
   return (
     <div className="flex h-full flex-col">
-      <Header title="AI Chat" />
+      <Header title="AI Chat">
+        {messages.length > 0 && !historyLoading && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClearHistory}
+            className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-destructive"
+            aria-label="Clear chat history"
+          >
+            <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+            Clear history
+          </Button>
+        )}
+      </Header>
 
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto px-4 py-6">
         <div className="mx-auto max-w-2xl space-y-6">
+
+          {/* History loading skeleton */}
+          {historyLoading && <HistorySkeleton />}
 
           {/* Empty state */}
           {isEmpty && (
@@ -234,14 +315,14 @@ export default function ChatPage() {
               onKeyDown={handleKeyDown}
               placeholder="Ask about your health data… (Enter to send, Shift+Enter for new line)"
               rows={1}
-              disabled={loading}
+              disabled={loading || historyLoading}
               aria-label="Chat message input"
               className="flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50 max-h-40 py-1.5"
               style={{ fieldSizing: "content" } as React.CSSProperties}
             />
             <Button
               onClick={() => sendMessage(input)}
-              disabled={loading || !input.trim()}
+              disabled={loading || historyLoading || !input.trim()}
               size="icon"
               className="mb-0.5 h-8 w-8 shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white"
               aria-label="Send message"

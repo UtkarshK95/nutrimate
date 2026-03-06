@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { FitnessImport, FitnessFileType } from "@/types/fitness";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Activity,
   Loader2,
@@ -166,8 +167,21 @@ export default function FitnessPage() {
 
         {/* Import list */}
         {loading ? (
-          <div className="flex justify-center py-12" aria-live="polite">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden="true" />
+          <div className="space-y-4" aria-busy="true" aria-label="Loading fitness data">
+            {[1, 2].map((n) => (
+              <div key={n} className="rounded-xl border bg-card p-5 space-y-3">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-40" />
+                    <Skeleton className="h-3 w-56" />
+                  </div>
+                  <Skeleton className="h-8 w-8 rounded-md" />
+                </div>
+                <div className="grid grid-cols-5 gap-2 pt-1">
+                  {[1, 2, 3, 4, 5].map((s) => <Skeleton key={s} className="h-16 rounded-lg" />)}
+                </div>
+              </div>
+            ))}
           </div>
         ) : loadError ? (
           <div className="flex flex-col items-center gap-2 py-12 text-center" role="alert">

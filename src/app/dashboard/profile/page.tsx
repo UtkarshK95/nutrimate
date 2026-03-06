@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { EMPTY_PROFILE, type HealthProfile } from "@/types/profile";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle, Loader2, AlertCircle } from "lucide-react";
 
 type SaveState = "idle" | "saving" | "success" | "error";
@@ -77,8 +78,22 @@ export default function ProfilePage() {
     return (
       <>
         <Header title="Health Profile" />
-        <div className="flex items-center justify-center p-16" aria-live="polite" aria-label="Loading profile">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" aria-hidden="true" />
+        <div className="mx-auto max-w-2xl px-6 py-8 space-y-6" aria-busy="true" aria-label="Loading profile">
+          <div className="rounded-xl border bg-card p-6 space-y-4">
+            <Skeleton className="h-5 w-32" />
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-9 w-full" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2"><Skeleton className="h-4 w-12" /><Skeleton className="h-9 w-full" /></div>
+              <div className="space-y-2"><Skeleton className="h-4 w-16" /><Skeleton className="h-9 w-full" /></div>
+            </div>
+            <div className="space-y-2"><Skeleton className="h-4 w-28" /><Skeleton className="h-9 w-full" /></div>
+            <div className="space-y-2"><Skeleton className="h-4 w-24" /><Skeleton className="h-9 w-full" /></div>
+            <div className="space-y-2"><Skeleton className="h-4 w-20" /><Skeleton className="h-20 w-full" /></div>
+            <Skeleton className="h-9 w-28" />
+          </div>
         </div>
       </>
     );
