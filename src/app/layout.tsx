@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: "Nutrimate — Personal Health AI",
   description:
     "A local-first, RAG-powered personal health AI assistant. Your data never leaves your machine.",
+  icons: { icon: "/favicon.ico" },
 };
 
 export default function RootLayout({
