@@ -130,7 +130,7 @@ NutriMate is a **personal hobby project** and is not a medical device. AI-genera
 
 ## ☕ Support the Project
 
-- **GitHub:** [https://github.com/UtkarshK95/react-nano-skeleton](https://github.com/UtkarshK95/react-nano-skeleton)
+- **GitHub:** [https://github.com/UtkarshK95/nutrimate](https://github.com/UtkarshK95/nutrimate)
 - **Buy Me a Coffee:** [https://buymeacoffee.com/utkarshk95](https://buymeacoffee.com/utkarshk95)
 
 ---
